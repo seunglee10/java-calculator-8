@@ -1,6 +1,7 @@
 package calculator.service;
 
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -15,5 +16,24 @@ public class StringCalculatorTest {
     void setUp() {
         // Service 계층의 실제 구현 객체를 생성
         calculator = new StringCalculator();
+
     }
+
+    // 빈 문자열 처리 기능 테스트
+
+    @Test
+    @DisplayName("빈 문자열을 입력하면 0을 반환해야 한다.")
+    void empty_should_return_zero() {
+        // given
+        String input = "";
+
+        // when
+        int result = calculator.add(input);
+
+        // then
+        // 입력값이 빈 문자열("")일 경우 0을 반환한다.
+        assertThat(result).isEqualTo(0);
+    }
+
+
 }
