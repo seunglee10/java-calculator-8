@@ -64,5 +64,18 @@ public class StringCalculatorTest {
         //then
         assertThat(result).isEqualTo(expected);
     }
+    @ParameterizedTest
+    @CsvSource(value = {"//;\\n1;2;3=6", "//#\\n4#5#6=15"}, delimiter = '=')
+    @DisplayName("커스텀 구분자가 있을 경우 해당 구분자로 분리하여 합을 구해야 한다.")
+    void custom_delimiter_should_return_sum(String input, int expected) {
+        // given
+        // 입력값과 기대값은 CsvSource에서 제공
+
+        // when
+        int result = calculator.add(input);
+
+        //then
+        assertThat(result).isEqualTo(expected);
+    }
 
 }
