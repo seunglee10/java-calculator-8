@@ -1,24 +1,33 @@
 package calculator.model;
 
+import java.util.Objects;
+import java.util.Arrays;
+import java.util.List;
+
 // 모든 유효성 검사 로직을 담는 클래스
 public class InputValidator {
 
-    // 개별 숫자 문자열의 유효성 검사하는 메소드
-    public int validateNumber(String numberString) {
-        // Todo
-        // 1. numberString이 숫자로 변환 가능한지 확인
-        // 2. 음수 형식의 토큰인지 확인
-        // 3. 값 반환
-
-        try {
-            return Integer.parseInt(numberString);
-        } catch (NumberFormatException e) {
-            throw e;
+    // 숫자로 분리된 문자열 목록을 받아 유효성 검사
+    public void validateNumbers(List<String> numbers) {
+        for (String number : numbers) {
+            validateNumber(number);
         }
     }
 
-    // 최종 합계나 개별 숫자가 int 양수 범위를 초과하는지 검사
-    public void validateRange(long number) {
+    public void validateNumber(String number) {
+        if (number == null || number.trim().isEmpty()) {
+            return;
+        }
+
+        try {
+            int num = Integer.parseInt(number);
+
+            if (num < 0) {
+                throw new RuntimeException("음수는 입력할 수 없습니다. 입력된 값: " + number);
+            }
+        } catch (NumberFormatException e) {
+            throw new RuntimeException("유효하지 않은 숫자 형식입니다. 입력된 값: " + number, e);
+        }
 
     }
 }
