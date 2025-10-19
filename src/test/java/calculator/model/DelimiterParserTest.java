@@ -5,6 +5,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
+import org.junit.jupiter.params.provider.ValueSource;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy; // 예외 테스트에 사용
@@ -51,5 +52,19 @@ public class DelimiterParserTest {
         // 현재 parse()는 입력 전체를 반환하므로, 이 테스트는 당장은 성공하지만, 이후 로직 변경 시 다시 실패(RED)할 수 있습니다.
         assertThat(result).containsExactly(input);
     }
+    @ParameterizedTest
+    @ValueSource(strings = {"//1\\n1;2", "//a\\n1;2", "//ABC\\N1;2"})
+    @DisplayName("구분자가 숫자나 영문자일 경우 파싱에 실패하고 입력 전체를 반환해야 함")
+    void delimiter_should_be_special_charcter(String input) {
+        // given
+        // 입력값은 ValueSource에서 제공
+
+        // when
+        String[] result = parser.parse(input);
+
+        // then
+        assertThat(result).containsExactly(input);
+    }
+
 
 }
