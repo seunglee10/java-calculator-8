@@ -21,8 +21,8 @@ public class DelimiterParserTest {
     }
 
     @ParameterizedTest
-    @CsvSource(value = {"//;\n1;2;3=1;2;3", "//a\n4a5a6=4a5a6", "// \n1 2 3=1 2 3"}, delimiter = '=')
-    @DisplayName("커스텀 구분자가 있을 경우, 숫자 문자열만 추출해야 한다.")
+    @CsvSource(value = {"//;\\n1;2;3=1;2;3", "//?\\n4?5?6=4?5?6", "// \\n1 2 3=1 2 3"}, delimiter = '=')
+    @DisplayName("커스텀 구분자가 있을 경우, 계산할 문자열만 추출해야 함")
     void custom_delimiter_should_extract_numbers_string(String input, String expected) {
         // given
         // 입력값과 기대값은 CsvSource에서 제공
@@ -32,11 +32,14 @@ public class DelimiterParserTest {
         String[] result = parser.parse(input);
 
         // then
-        assertThat(result).containsExactly(expected.split(" ")); // 배열을 문자열로 비교하기 위해 분리합니다.
+        // assertThat(result).containsExactly(expected.split(" ")); // 배열을 문자열로 비교하기 위해 분리
+        assertThat(result).containsExactly(expected);
     }
 
+
+
     @Test
-    @DisplayName("커스텀 구분자가 없을 경우, 입력 전체를 반환해야 한다.")
+    @DisplayName("커스텀 구분자가 없을 경우, 입력 전체를 반환해야 함")
     void no_custom_delimiter_should_return_all_input() {
         // given
         String input = "1,2:3";
