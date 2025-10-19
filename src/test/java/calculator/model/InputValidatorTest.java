@@ -46,6 +46,4 @@ public class InputValidatorTest {
 
     }
     // int 범위 초과 검증 시 assertThat를 사용해 성공 케이스 검증 예정
-
-
 }
