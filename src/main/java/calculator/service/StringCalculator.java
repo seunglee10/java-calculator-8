@@ -1,13 +1,15 @@
 package calculator.service;
 
 import calculator.model.DelimiterParser;
+import calculator.model.DelimiterParserResult;
 import calculator.model.InputValidator;
+
+import java.util.regex.Pattern;
 
 public class StringCalculator {
 
     private final DelimiterParser parser;
     private final InputValidator validator;
-
 
     public StringCalculator() {
         this.parser = new DelimiterParser();
@@ -20,28 +22,29 @@ public class StringCalculator {
         if (text == null || text.isEmpty()) {
             return 0;
         }
-
-        String[] parsedStrings = parser.parse(text);
-
-        return sum(parsedStrings);
+        DelimiterParserResult parsedResult = parser.parse(text);
+        return sum(parsedResult);
 
     }
-    private int sum(String[] parsedStrings) {
-        int totalSum = 0;
+    private int sum(DelimiterParserResult result) {
+        String numbersString = result.getNumbersString();
 
-        String numberString = parsedStrings[0];
+        String delimiterRegex = "[,:]";
 
-        String delimiterRegx = "[,:]";
-
-        String replacedText = numberString.replaceAll(":", ",");
+        if (result.getCustomDelimiters().length > 0) {
+            String customDelimiter = Pattern.quote(result.getCustomDelimiters()[0]);
+            delimiterRegex += "|" + customDelimiter;
+        }
 
         // 문자열을 쉼표(,) 기분으로 분리
-        String[] numbers = replacedText.split(",");
+        String[] numbers = numbersString.split(delimiterRegex);
 
+        int totalSum = 0;
         // 분리된 문자열 배열을 순회하며 계산
 
         for (String number : numbers) {
             validator.validateNumber(number);
+            totalSum += Integer.parseInt(number);
         }
         return totalSum;
     }

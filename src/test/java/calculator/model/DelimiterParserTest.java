@@ -6,6 +6,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 import org.junit.jupiter.params.provider.ValueSource;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy; // 예외 테스트에 사용
@@ -30,11 +31,14 @@ public class DelimiterParserTest {
 
         // when
         // 현재 parse() 메서드는 입력 전체를 반환하므로, 구분자가 포함된 문자열을 반환하여 테스트 실패(RED) 유도
-        String[] result = parser.parse(input);
+        DelimiterParserResult result = parser.parse(input);
 
         // then
         // assertThat(result).containsExactly(expected.split(" ")); // 배열을 문자열로 비교하기 위해 분리
-        assertThat(result).containsExactly(expected);
+        assertThat(result.getNumbersString()).isEqualTo(expected);
+
+        String expectedDelimiter = String.valueOf(input.charAt(2));
+        assertThat(result.getCustomDelimiters()).containsExactly(expectedDelimiter);
     }
 
 
@@ -46,11 +50,12 @@ public class DelimiterParserTest {
         String input = "1,2:3";
 
         // when
-        String[] result = parser.parse(input);
+        DelimiterParserResult result = parser.parse(input);
 
         // then
         // 현재 parse()는 입력 전체를 반환하므로, 이 테스트는 당장은 성공하지만, 이후 로직 변경 시 다시 실패(RED)할 수 있습니다.
-        assertThat(result).containsExactly(input);
+        assertThat(result.getNumbersString()).isEqualTo(input);
+        assertThat(result.getCustomDelimiters()).isEmpty();
     }
     @ParameterizedTest
     @ValueSource(strings = {"//1\\n1;2", "//a\\n1;2", "//ABC\\N1;2"})
@@ -60,10 +65,11 @@ public class DelimiterParserTest {
         // 입력값은 ValueSource에서 제공
 
         // when
-        String[] result = parser.parse(input);
+        DelimiterParserResult result = parser.parse(input);
 
         // then
-        assertThat(result).containsExactly(input);
+        assertThat(result.getNumbersString()).isEqualTo(input);
+        assertThat(result.getCustomDelimiters()).isEmpty();
     }
 
     @Test
