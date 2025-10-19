@@ -21,7 +21,7 @@ class ApplicationTest extends NsTest {
 
           // when: runMain();
 
-          // then: Nstest의 assertOutput() 사용으로 검증
+          // then: Nstest 의 assertOutput() 사용으로 검증
       }
       */
 
