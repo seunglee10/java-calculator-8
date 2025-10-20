@@ -112,6 +112,88 @@ public class DelimiterParserTest {
         assertThat(result.getCustomDelimiters()).containsExactly(";");
     }
 
+    @Test
+    @DisplayName("백슬래시(\\) 구분자를 사용할 수 있어야 한다.")
+    void backslash_delimiter_should_work() {
+        // given
+        String input = "//\\\n1\\2\\3";
 
+        //when
+        DelimiterParserResult result = parser.parse(input);
+
+        //then
+        assertThat(result.getNumbersString()).isEqualTo("1\\2\\3");
+        assertThat(result.getCustomDelimiters()).containsExactly("\\");
+    }
+
+    @Test
+    @DisplayName("정규식 메타 문자($) 구분자를 사용할 수 있어야 한다.")
+    void regex_metacharacter_delimiter_should_work() {
+        // given
+        String input = "//$\n1$2$3";
+
+        //when
+        DelimiterParserResult result = parser.parse(input);
+
+        //then
+        assertThat(result.getNumbersString()).isEqualTo("1$2$3");
+        assertThat(result.getCustomDelimiters()).containsExactly("$");
+    }
+
+    @Test
+    @DisplayName("점(.) 구분자를 사용할 수 있어야 한다.")
+    void dot_delimiter_should_work() {
+        // given
+        String input = "//.\n1.2.3";
+
+        //when
+        DelimiterParserResult result = parser.parse(input);
+
+        //then
+        assertThat(result.getNumbersString()).isEqualTo("1.2.3");
+        assertThat(result.getCustomDelimiters()).containsExactly(".");
+    }
+
+    @Test
+    @DisplayName("다글자 구분자(abc)를 사용할 수 있어야 한다.")
+    void multi_char_delimiter_should_work() {
+        // given
+        String input = "//abc\n1abc2abc3";
+
+        //when
+        DelimiterParserResult result = parser.parse(input);
+
+        //then
+        assertThat(result.getNumbersString()).isEqualTo("1abc2abc3");
+        assertThat(result.getCustomDelimiters()).containsExactly("abc");
+    }
+
+    @Test
+    @DisplayName("숫자와 문자 결합 구분자(a1b)를 사용할 수 있어야 한다.")
+    void alphanumeric_delimiter_should_work() {
+        // given
+        String input = "//a1b\n1a1b2a1b3";
+
+        //when
+        DelimiterParserResult result = parser.parse(input);
+
+        //then
+        assertThat(result.getNumbersString()).isEqualTo("1a1b2a1b3");
+        assertThat(result.getCustomDelimiters()).containsExactly("a1b");
+    }
+
+    @Test
+    @DisplayName("숫자 문자열에 개행이 여러 개 있어도 첫 번째 개행까지만 구분자로 인식해야 한다.")
+    void multiple_newlines_in_numbers_should_work() {
+        // given
+        String input = "//;\n1;2\n3";
+
+        //when
+        DelimiterParserResult result = parser.parse(input);
+
+        //then
+        assertThat(result.getNumbersString()).isEqualTo("1;2\n3");
+        assertThat(result.getCustomDelimiters()).containsExactly(";");
+    }
 
 }

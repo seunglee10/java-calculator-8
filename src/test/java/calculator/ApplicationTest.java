@@ -74,7 +74,6 @@ class ApplicationTest extends NsTest {
         );
     }
 
-
     @Test
     @DisplayName("숫자가 아닌 문자가 포함되면 예외가 발생해야 한다.")
     void non_numeric_should_throw_exception() {

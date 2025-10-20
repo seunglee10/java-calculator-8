@@ -7,7 +7,8 @@ public class DelimiterParser {
 
     // 커스텀 구분자 패턴 정의 : 1글자 이상, 숫자와 문자 결합 허용
     // 개행 형식: 실제 개행 문자만 지원 (\n, \r\n, \r)
-    private static final Pattern CUSTOM_DELIMITER_PATTERN = Pattern.compile("^//(.+)(?:\\n|\\r\\n|\\r)(.*)$", Pattern.DOTALL);
+    // (.+?) : non-greedy 방식으로 첫 번째 개행까지만 매칭
+    private static final Pattern CUSTOM_DELIMITER_PATTERN = Pattern.compile("^//(.+?)(?:\\n|\\r\\n|\\r)(.*)$", Pattern.DOTALL);
 
     // 모든 개행 형식 지원 (리터럴 포함) - 필요시 활성화
     // private static final Pattern CUSTOM_DELIMITER_PATTERN = Pattern.compile("^//([^0-9a-zA-Z\\s])(?:\\\\n|\\\\r\\\\n|\\n|\\r\\n|\\r)(.*)$", Pattern.DOTALL);

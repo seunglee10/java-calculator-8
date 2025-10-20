@@ -254,4 +254,17 @@ public class StringCalculatorTest {
         assertThat(result).isEqualTo(expected);
     }
 
+    @Test
+    @DisplayName("커스텀 구분자 형식에서 개행이 2개 있으면 예외가 발생해야 한다.")
+    void double_newline_after_delimiter_should_throw_exception() {
+        // given
+        String input = "//?\n\n4?5?6";
+
+        // when & then
+        assertThat(org.junit.jupiter.api.Assertions.assertThrows(
+            IllegalArgumentException.class,
+            () -> calculator.add(input)
+        )).hasMessageContaining("구분자");
+    }
+
 }
