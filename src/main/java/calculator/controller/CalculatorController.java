@@ -21,10 +21,16 @@ public class CalculatorController {
             // 1. InputView를 통해 입력
             String input = inputView.getInput();
 
-            // 2. StringCalculator(Service)를 호출
+            // 2. 빈 문자열 체크 (모든 로직 시작 전 맨 처음)
+            if (input == null || input.isEmpty()) {
+                outputView.printResult(0);
+                return;
+            }
+
+            // 3. StringCalculator(Service)를 호출
             long result = calculator.add(input);
 
-            // 3. OutputView로 결과 출력
+            // 4. OutputView로 결과 출력
             outputView.printResult(result);
 
         } catch (IllegalArgumentException e) {

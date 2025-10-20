@@ -1,6 +1,5 @@
 package calculator.service;
 
-import calculator.service.StringCalculator;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -8,8 +7,6 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 
 import static org.assertj.core.api.Assertions.assertThat;
-
-// 예외 테스트 시 static org.assertj.core.api.Assertions.assertThat; 를 사용
 
 public class StringCalculatorTest {
 
@@ -126,6 +123,20 @@ public class StringCalculatorTest {
     void multi_char_custom_delimiter_should_work() {
         // given
         String input = "//;;\n1;;2;;3";
+        long expected = 6;
+
+        // when
+        long result = calculator.add(input);
+
+        // then
+        assertThat(result).isEqualTo(expected);
+    }
+
+    @Test
+    @DisplayName("3글자 커스텀 구분자(abc)를 사용할 수 있어야 한다.")
+    void three_char_custom_delimiter_should_work() {
+        // given
+        String input = "//abc\n1abc2abc3";
         long expected = 6;
 
         // when

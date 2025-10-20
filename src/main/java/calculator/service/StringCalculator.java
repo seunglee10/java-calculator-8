@@ -18,7 +18,7 @@ public class StringCalculator {
 
     // 문자열을 입력받아 숫자를 추출하고 합을 반환하는 메소드
     public long add(String text) {
-        // 빈 문자열 처리
+        // 빈 문자열 처리 (Controller에서도 체크하지만 Service 레이어의 안정성을 위해 중복 체크)
         if (text == null || text.isEmpty()) {
             return 0;
         }

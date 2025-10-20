@@ -1,21 +1,15 @@
 package calculator.model;
 
-import java.util.Objects;
-import java.util.Arrays;
 import java.util.List;
-import java.util.regex.Pattern;
-import java.util.regex.Matcher;
 
 // 모든 유효성 검사 로직을 담는 클래스
 public class InputValidator {
 
-    // 커스텀 구분자 패턴: 1글자 이상, 숫자와 문자 결합 허용
-    // 개행 형식: 실제 개행 문자만 지원 (\n, \r\n, \r)
-    // (.+?) : non-greedy 방식으로 첫 번째 개행까지만 매칭
-    private static final Pattern CUSTOM_DELIMITER_PATTERN = Pattern.compile("^//(.+?)(?:\\n|\\r\\n|\\r)(.*)$", Pattern.DOTALL);
+    private final DelimiterParser delimiterParser;
 
-    // 모든 개행 형식 지원 (리터럴 포함) - 필요시 활성화
-    // private static final Pattern CUSTOM_DELIMITER_PATTERN = Pattern.compile("^//([^0-9a-zA-Z\\s])(?:\\\\n|\\\\r\\\\n|\\n|\\r\\n|\\r)(.*)$", Pattern.DOTALL);
+    public InputValidator() {
+        this.delimiterParser = new DelimiterParser();
+    }
 
     // 입력 문자열 전체 구조 검증
     public void validateInputStructure(String text) {
@@ -31,18 +25,17 @@ public class InputValidator {
         }
     }
 
-    // 커스텀 구분자 형식 검증
+    // 커스텀 구분자 형식 검증 - DelimiterParser를 사용하여 파싱 시도
     private void validateCustomDelimiterStructure(String text) {
-        Matcher matcher = CUSTOM_DELIMITER_PATTERN.matcher(text);
-        if (!matcher.matches()) {
+        DelimiterParserResult result = delimiterParser.parse(text);
+
+        // 파싱 실패 시 (커스텀 구분자 형식이 아님)
+        if (result.getCustomDelimiters().length == 0) {
             throw new IllegalArgumentException("커스텀 구분자 형식이 올바르지 않습니다. 형식: //[구분자]\\n[숫자]");
         }
 
-        // 정규표현식 그룹으로 구분자와 숫자 문자열 추출
-        matcher.reset();
-        matcher.find();
-        String delimiter = matcher.group(1);
-        String numbersString = matcher.group(2);
+        String delimiter = result.getCustomDelimiters()[0];
+        String numbersString = result.getNumbersString();
 
         // 커스텀 구분자 검증 (숫자만으로 구성된 경우 불가, 숫자와 문자 결합은 허용)
         if (delimiter.matches("^[0-9]+$")) {
@@ -54,11 +47,16 @@ public class InputValidator {
             throw new IllegalArgumentException("구분자에 개행 문자를 포함할 수 없습니다. 입력된 구분자: " + delimiter);
         }
 
+        // 숫자 문자열에 개행 문자가 맨 앞이나 맨 뒤에 있는지 검증
+        if (numbersString.startsWith("\n") || numbersString.startsWith("\r") ||
+            numbersString.endsWith("\n") || numbersString.endsWith("\r")) {
+            throw new IllegalArgumentException("문자열의 맨 앞이나 맨 뒤에 구분자가 올 수 없습니다.");
+        }
+
         // 맨 앞/뒤는 반드시 숫자여야 함 (어떤 특수문자든 불가)
         if (!numbersString.matches("^\\d.*\\d$") && !numbersString.matches("^\\d$")) {
             throw new IllegalArgumentException("문자열의 맨 앞이나 맨 뒤에 구분자가 올 수 없습니다.");
         }
-
     }
 
     // 기본 구분자 형식 검증

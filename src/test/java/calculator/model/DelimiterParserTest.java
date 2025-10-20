@@ -4,12 +4,9 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.CsvSource;
 import org.junit.jupiter.params.provider.ValueSource;
-import static org.assertj.core.api.Assertions.assertThat;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy; // 예외 테스트에 사용
 
 public class DelimiterParserTest {
 
@@ -71,9 +68,9 @@ public class DelimiterParserTest {
         assertThat(result.getCustomDelimiters()).isEmpty();
     }
     @ParameterizedTest
-    @ValueSource(strings = {"//1\\n1;2", "//a\\n1;2", "//ABC\\N1;2"})
-    @DisplayName("구분자가 숫자나 영문자일 경우 파싱에 실패하고 입력 전체를 반환해야 함")
-    void delimiter_should_be_special_charcter(String input) {
+    @ValueSource(strings = {"//1\\n1;2", "//123\\n1;2", "//999\\n1;2"})
+    @DisplayName("구분자가 숫자로만 구성된 경우에도 파싱은 성공해야 함 (검증은 InputValidator에서 수행)")
+    void delimiter_numeric_only_should_be_parsed(String input) {
         // given
         // 입력값은 ValueSource에서 제공
 
@@ -81,8 +78,10 @@ public class DelimiterParserTest {
         DelimiterParserResult result = parser.parse(input);
 
         // then
-        assertThat(result.getNumbersString()).isEqualTo(input);
-        assertThat(result.getCustomDelimiters()).isEmpty();
+        // 파싱은 성공하고, 구분자와 숫자 문자열이 분리되어야 함
+        assertThat(result.getCustomDelimiters()).hasSize(1);
+        assertThat(result.getNumbersString()).isEqualTo("1;2");
+        // 숫자로만 구성된 구분자 검증은 InputValidator에서 수행됨
     }
 
     @Test
