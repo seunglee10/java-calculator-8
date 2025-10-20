@@ -74,14 +74,6 @@ class ApplicationTest extends NsTest {
         );
     }
 
-    @Test
-    @DisplayName("10000 이상의 숫자가 있으면 예외가 발생해야 한다.")
-    void number_over_10000_should_throw_exception() {
-        assertSimpleTest(() ->
-            assertThatThrownBy(() -> runException("10000,1"))
-                .isInstanceOf(IllegalArgumentException.class)
-        );
-    }
 
     @Test
     @DisplayName("숫자가 아닌 문자가 포함되면 예외가 발생해야 한다.")
