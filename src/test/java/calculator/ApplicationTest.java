@@ -16,7 +16,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
  *
  * 커스텀 구분자 처리:
  * - InputView가 "//"로 시작하는 입력을 감지하면 자동으로 두 번째 줄을 읽습니다.
- * - NsTest에서는 run("//;", "1;2;3") 형식으로 2줄 입력을 시뮬레이션합니다.
+ * - NsTest에서는 run("//;\\n1;2;3") 형식으로 개행을 포함한 입력을 시뮬레이션합니다.
  * - 실제 실행 시에는 사용자가 구분자 선언과 숫자를 각각 입력합니다.
  */
 class ApplicationTest extends NsTest {
@@ -159,7 +159,7 @@ class ApplicationTest extends NsTest {
     @DisplayName("커스텀 구분자(;)로 숫자를 구분할 수 있어야 한다.")
     void custom_delimiter_semicolon_should_work() {
         assertSimpleTest(() -> {
-            run("//;", "1;2;3");
+            run("//;\\n1;2;3");
             assertThat(output()).contains("결과 : 6");
         });
     }
@@ -168,7 +168,7 @@ class ApplicationTest extends NsTest {
     @DisplayName("커스텀 구분자(-)로 숫자를 구분할 수 있어야 한다.")
     void custom_delimiter_dash_should_work() {
         assertSimpleTest(() -> {
-            run("//-", "2-3-4");
+            run("//-\\n2-3-4");
             assertThat(output()).contains("결과 : 9");
         });
     }
@@ -177,7 +177,7 @@ class ApplicationTest extends NsTest {
     @DisplayName("커스텀 구분자와 기본 구분자를 함께 사용할 수 있어야 한다.")
     void custom_and_default_delimiters_should_work() {
         assertSimpleTest(() -> {
-            run("//-", "5-6,7");
+            run("//-\\n5-6,7");
             assertThat(output()).contains("결과 : 18");
         });
     }
@@ -186,7 +186,7 @@ class ApplicationTest extends NsTest {
     @DisplayName("다글자 커스텀 구분자를 사용할 수 있어야 한다.")
     void multi_char_custom_delimiter_should_work() {
         assertSimpleTest(() -> {
-            run("//abc", "1abc2abc3");
+            run("//abc\\n1abc2abc3");
             assertThat(output()).contains("결과 : 6");
         });
     }
@@ -195,7 +195,7 @@ class ApplicationTest extends NsTest {
     @DisplayName("숫자와 문자 결합 커스텀 구분자(a1b)를 사용할 수 있어야 한다.")
     void alphanumeric_custom_delimiter_should_work() {
         assertSimpleTest(() -> {
-            run("//a1b", "1a1b2a1b3");
+            run("//a1b\\n1a1b2a1b3");
             assertThat(output()).contains("결과 : 6");
         });
     }
@@ -204,7 +204,7 @@ class ApplicationTest extends NsTest {
     @DisplayName("숫자와 문자 결합 커스텀 구분자(abc3)를 사용할 수 있어야 한다.")
     void alphanumeric_with_number_at_end_should_work() {
         assertSimpleTest(() -> {
-            run("//abc3", "1abc32abc33");
+            run("//abc3\\n1abc32abc33");
             assertThat(output()).contains("결과 : 6");
         });
     }
@@ -213,7 +213,7 @@ class ApplicationTest extends NsTest {
     @DisplayName("숫자와 문자 결합 커스텀 구분자(1a)를 사용할 수 있어야 한다.")
     void number_first_alphanumeric_delimiter_should_work() {
         assertSimpleTest(() -> {
-            run("//1a", "11a21a3");
+            run("//1a\\n11a21a3");
             assertThat(output()).contains("결과 : 6");
         });
     }
@@ -222,7 +222,7 @@ class ApplicationTest extends NsTest {
     @DisplayName("숫자와 문자 결합 커스텀 구분자(a2b3)를 사용할 수 있어야 한다.")
     void complex_alphanumeric_delimiter_should_work() {
         assertSimpleTest(() -> {
-            run("//a2b3", "1a2b32a2b33");
+            run("//a2b3\\n1a2b32a2b33");
             assertThat(output()).contains("결과 : 6");
         });
     }
@@ -231,7 +231,7 @@ class ApplicationTest extends NsTest {
     @DisplayName("숫자만으로 구성된 커스텀 구분자는 예외가 발생해야 한다.")
     void numeric_only_custom_delimiter_should_throw_exception() {
         assertSimpleTest(() ->
-            assertThatThrownBy(() -> runException("//123", "1,2,3"))
+            assertThatThrownBy(() -> runException("//123\\n1,2,3"))
                 .isInstanceOf(IllegalArgumentException.class)
         );
     }
