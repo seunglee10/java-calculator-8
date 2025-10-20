@@ -17,7 +17,7 @@ public class StringCalculator {
     }
 
     // 문자열을 입력받아 숫자를 추출하고 합을 반환하는 메소드
-    public int add(String text) {
+    public long add(String text) {
         // 빈 문자열 처리
         if (text == null || text.isEmpty()) {
             return 0;
@@ -30,7 +30,7 @@ public class StringCalculator {
         return sum(parsedResult);
 
     }
-    private int sum(DelimiterParserResult result) {
+    private long sum(DelimiterParserResult result) {
         String numbersString = result.getNumbersString();
 
         // 커스텀 구분자가 있으면 먼저 커스텀 구분자를 통일된 기본 구분자로 치환
@@ -43,17 +43,19 @@ public class StringCalculator {
         String delimiterRegex = "[,:]";
         String[] numbers = numbersString.split(delimiterRegex);
 
-        // 숫자 개수 제한 검증 (999개까지 허용, 1000개 이상 불가)
-        if (numbers.length >= 1000) {
-            throw new IllegalArgumentException("숫자는 999개까지 입력할 수 있습니다. 입력된 개수: " + numbers.length);
-        }
-
-        int totalSum = 0;
+        long totalSum = 0;
         // 분리된 문자열 배열을 순회하며 계산
 
         for (String number : numbers) {
             validator.validateNumber(number);
-            totalSum += Integer.parseInt(number);
+            long num = Long.parseLong(number);
+
+            // long 범위 overflow 체크
+            if (totalSum > Long.MAX_VALUE - num) {
+                throw new IllegalArgumentException("합계가 long 타입의 최대값을 초과합니다.");
+            }
+
+            totalSum += num;
         }
         return totalSum;
     }

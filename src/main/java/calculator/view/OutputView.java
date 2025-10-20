@@ -3,7 +3,7 @@ package calculator.view;
 public class OutputView {
 
     // 최종 결과를 출력하는 메소드
-    public void printResult(int result) {
+    public void printResult(long result) {
         System.out.println("결과 : " + result);
     }
 

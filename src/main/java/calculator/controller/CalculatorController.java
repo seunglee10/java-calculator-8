@@ -22,7 +22,7 @@ public class CalculatorController {
             String input = inputView.getInput();
 
             // 2. StringCalculator(Service)를 호출
-            int result = calculator.add(input);
+            long result = calculator.add(input);
 
             // 3. OutputView로 결과 출력
             outputView.printResult(result);

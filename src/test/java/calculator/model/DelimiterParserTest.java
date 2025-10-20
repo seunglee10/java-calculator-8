@@ -102,13 +102,13 @@ public class DelimiterParserTest {
     @DisplayName("커스텀 구분자가 있을 경우, 숫자 문자열과 해당 구분자를 반환해야 함")
     void custom_delimiter_should_return_delimiter_and_numbers_string() {
         // given
-        String input = "//;\n1;2;3";
+        String input = "//;\n1,2;3";
 
         //when
         DelimiterParserResult result = parser.parse(input);
 
         //then
-        assertThat(result.getNumbersString()).isEqualTo("1;2;3");
+        assertThat(result.getNumbersString()).isEqualTo("1,2;3");
         assertThat(result.getCustomDelimiters()).containsExactly(";");
     }
 

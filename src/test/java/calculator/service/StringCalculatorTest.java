@@ -32,7 +32,7 @@ public class StringCalculatorTest {
         String input = "";
 
         // when
-        int result = calculator.add(input);
+        long result = calculator.add(input);
 
         // then
         // 입력값이 빈 문자열("")일 경우 0을 반환한다.
@@ -46,7 +46,7 @@ public class StringCalculatorTest {
         String input = "5";
 
         // when
-        int result = calculator.add(input); // 현재 add()는 "5"에 대해 0을 반환. 테스트 실패 유도
+        long result = calculator.add(input); // 현재 add()는 "5"에 대해 0을 반환. 테스트 실패 유도
 
         // then
         assertThat(result).isEqualTo(5);
@@ -55,11 +55,11 @@ public class StringCalculatorTest {
     @ParameterizedTest
     @CsvSource(value = {"1,2=3", "1:2:3=6", "1,2:3=6", "10,20=30"}, delimiter = '=')
     @DisplayName("쉽표나 콜론을 구분자로 사용해 합을 구해야 한다.")
-    void default_delimiters_should_return_sum(String input, int expected) {
+    void default_delimiters_should_return_sum(String input, long expected) {
         // given (입력과 기대값은 CsvSource에서 제공)
 
         //when
-        int result = calculator.add(input); // 현재 add()는 0을 반환하므로 테스트 실패 유도
+        long result = calculator.add(input); // 현재 add()는 0을 반환하므로 테스트 실패 유도
 
         //then
         assertThat(result).isEqualTo(expected);
@@ -69,10 +69,10 @@ public class StringCalculatorTest {
     void custom_delimiter_semicolon_should_return_sum() {
         // given
         String input = "//;\n1;2;3";
-        int expected = 6;
+        long expected = 6;
 
         // when
-        int result = calculator.add(input);
+        long result = calculator.add(input);
 
         //then
         assertThat(result).isEqualTo(expected);
@@ -83,10 +83,10 @@ public class StringCalculatorTest {
     void custom_delimiter_hash_should_return_sum() {
         // given
         String input = "//#\n4#5#6";
-        int expected = 15;
+        long expected = 15;
 
         // when
-        int result = calculator.add(input);
+        long result = calculator.add(input);
 
         //then
         assertThat(result).isEqualTo(expected);
@@ -97,10 +97,10 @@ public class StringCalculatorTest {
     void custom_and_default_delimiters_should_work_together() {
         // given
         String input = "//-\n5-6,7";
-        int expected = 18;
+        long expected = 18;
 
         // when
-        int result = calculator.add(input);
+        long result = calculator.add(input);
 
         //then
         assertThat(result).isEqualTo(expected);
@@ -112,10 +112,10 @@ public class StringCalculatorTest {
     void alphabetic_custom_delimiter_should_work() {
         // given
         String input = "//a\n1a2a3";
-        int expected = 6;
+        long expected = 6;
 
         // when
-        int result = calculator.add(input);
+        long result = calculator.add(input);
 
         // then
         assertThat(result).isEqualTo(expected);
@@ -126,10 +126,10 @@ public class StringCalculatorTest {
     void multi_char_custom_delimiter_should_work() {
         // given
         String input = "//;;\n1;;2;;3";
-        int expected = 6;
+        long expected = 6;
 
         // when
-        int result = calculator.add(input);
+        long result = calculator.add(input);
 
         // then
         assertThat(result).isEqualTo(expected);
@@ -149,16 +149,16 @@ public class StringCalculatorTest {
     }
 
     @Test
-    @DisplayName("10000 이상의 숫자가 있으면 예외가 발생해야 한다.")
-    void number_over_10000_should_throw_exception() {
+    @DisplayName("0 입력 시 예외가 발생해야 한다.")
+    void zero_input_should_throw_exception() {
         // given
-        String input = "10000,1";
+        String input = "0";
 
         // when & then
         assertThat(org.junit.jupiter.api.Assertions.assertThrows(
             IllegalArgumentException.class,
             () -> calculator.add(input)
-        )).hasMessageContaining("9999");
+        )).hasMessageContaining("0 초과하는 양수");
     }
 
     @Test
@@ -175,16 +175,16 @@ public class StringCalculatorTest {
     }
 
     @Test
-    @DisplayName("int 범위를 초과하는 숫자(2147483648)가 있으면 예외가 발생해야 한다.")
-    void number_exceeding_int_max_should_throw_exception() {
+    @DisplayName("long 범위 최대값은 정상 처리되어야 한다.")
+    void long_max_value_should_work() {
         // given
-        String input = "2147483648,1"; // Integer.MAX_VALUE + 1
+        String input = "9223372036854775807"; // Long.MAX_VALUE
 
-        // when & then
-        assertThat(org.junit.jupiter.api.Assertions.assertThrows(
-            IllegalArgumentException.class,
-            () -> calculator.add(input)
-        )).hasMessageContaining("9999");
+        // when
+        long result = calculator.add(input);
+
+        // then
+        assertThat(result).isEqualTo(9223372036854775807L);
     }
 
     @Test
@@ -192,54 +192,66 @@ public class StringCalculatorTest {
     void leading_zeros_should_be_handled() {
         // given
         String input = "0001,0002,0003";
-        int expected = 6;
+        long expected = 6;
 
         // when
-        int result = calculator.add(input);
+        long result = calculator.add(input);
 
         // then
         assertThat(result).isEqualTo(expected);
     }
 
     @Test
-    @DisplayName("000 같은 모든 0으로 구성된 숫자는 0으로 처리되어야 한다.")
-    void all_zeros_should_be_treated_as_zero() {
+    @DisplayName("000 같은 모든 0으로 구성된 숫자는 예외가 발생해야 한다.")
+    void all_zeros_should_throw_exception() {
         // given
         String input = "000,1,2";
-        int expected = 3;
-
-        // when
-        int result = calculator.add(input);
-
-        // then
-        assertThat(result).isEqualTo(expected);
-    }
-
-    @Test
-    @DisplayName("정확히 999개의 숫자는 정상적으로 처리되어야 한다.")
-    void exactly_999_numbers_should_work() {
-        // given - 999개의 1을 생성
-        String input = String.join(",", java.util.Collections.nCopies(999, "1"));
-        int expected = 999;
-
-        // when
-        int result = calculator.add(input);
-
-        // then
-        assertThat(result).isEqualTo(expected);
-    }
-
-    @Test
-    @DisplayName("1000개 이상의 숫자가 입력되면 예외가 발생해야 한다.")
-    void more_than_999_numbers_should_throw_exception() {
-        // given - 1000개의 숫자 생성
-        String input = String.join(",", java.util.Collections.nCopies(1000, "1"));
 
         // when & then
         assertThat(org.junit.jupiter.api.Assertions.assertThrows(
             IllegalArgumentException.class,
             () -> calculator.add(input)
-        )).hasMessageContaining("999");
+        )).hasMessageContaining("0 초과하는 양수");
+    }
+
+    @Test
+    @DisplayName("합계가 long 최대값을 초과하면 예외가 발생해야 한다.")
+    void sum_exceeding_long_max_should_throw_exception() {
+        // given
+        String input = "9223372036854775807,1"; // Long.MAX_VALUE + 1
+
+        // when & then
+        assertThat(org.junit.jupiter.api.Assertions.assertThrows(
+            IllegalArgumentException.class,
+            () -> calculator.add(input)
+        )).hasMessageContaining("long");
+    }
+
+    @Test
+    @DisplayName("숫자만으로 구성된 커스텀 구분자는 예외가 발생해야 한다.")
+    void numeric_only_custom_delimiter_should_throw_exception() {
+        // given
+        String input = "//123\n1,2,3";
+
+        // when & then
+        assertThat(org.junit.jupiter.api.Assertions.assertThrows(
+            IllegalArgumentException.class,
+            () -> calculator.add(input)
+        )).hasMessageContaining("숫자만으로 구성될 수 없습니다");
+    }
+
+    @Test
+    @DisplayName("숫자와 문자가 결합된 커스텀 구분자는 정상 처리되어야 한다.")
+    void alphanumeric_custom_delimiter_should_work() {
+        // given
+        String input = "//a1b\n1a1b2a1b3";
+        long expected = 6;
+
+        // when
+        long result = calculator.add(input);
+
+        // then
+        assertThat(result).isEqualTo(expected);
     }
 
 }
