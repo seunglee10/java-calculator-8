@@ -27,7 +27,6 @@ public class InputView {
         }
 
         // 커스텀 구분자 형식 체크
-        // 이미 개행 문자가 포함된 완전한 형식이면 그대로 반환 (단위 테스트 등)
         if (COMPLETE_CUSTOM_DELIMITER_PATTERN.matcher(firstLine).find()) {
             return firstLine;
         }

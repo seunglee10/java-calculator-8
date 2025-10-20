@@ -9,7 +9,6 @@ public class DelimiterParser {
     // 개행 형식: 실제 개행 문자(\n, \r\n, \r)와 리터럴 개행 문자열(\\n, \\r\\n) 모두 지원
     // (.+?) : non-greedy 방식으로 첫 번째 개행까지만 매칭
     // (.*) : 개행 이후의 모든 문자 (숫자 문자열)
-    // Pattern.DOTALL: '.'이 개행 문자도 매칭하도록 설정
     // (?:\\\\n|\\\\r\\n|\\\\r|\r?\n): 정확히 1개의 개행만 매칭 (리터럴 또는 실제)
     private static final Pattern CUSTOM_DELIMITER_PATTERN = Pattern.compile("^//(.+?)(?:\\\\n|\\\\r\\\\n|\\\\r|\\r?\\n)(.*)$", Pattern.DOTALL);
 

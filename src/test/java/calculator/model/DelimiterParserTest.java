@@ -62,8 +62,7 @@ public class DelimiterParserTest {
         // when
         DelimiterParserResult result = parser.parse(input);
 
-        // then
-        // 현재 parse()는 입력 전체를 반환하므로, 이 테스트는 당장은 성공하지만, 이후 로직 변경 시 다시 실패(RED)할 수 있습니다.
+
         assertThat(result.getNumbersString()).isEqualTo(input);
         assertThat(result.getCustomDelimiters()).isEmpty();
     }

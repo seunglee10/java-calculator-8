@@ -6,8 +6,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;  // 예외 테스트에 사용
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 public class InputValidatorTest {
 
@@ -73,7 +72,7 @@ public class InputValidatorTest {
         // given
         String input = "9223372036854775807"; // Long.MAX_VALUE
 
-        // when & then - 예외가 발생하지 않아야 함
+        // when & then
         org.junit.jupiter.api.Assertions.assertDoesNotThrow(() -> validator.validateNumber(input));
     }
 
@@ -83,7 +82,7 @@ public class InputValidatorTest {
         // given
         String input = "0001";
 
-        // when & then - 예외가 발생하지 않아야 함
+        // when & then
         org.junit.jupiter.api.Assertions.assertDoesNotThrow(() -> validator.validateNumber(input));
     }
 
@@ -117,7 +116,7 @@ public class InputValidatorTest {
         // given
         String input = "//a1b\n1a1b2a1b3";
 
-        // when & then - 예외가 발생하지 않아야 함
+        // when & then
         org.junit.jupiter.api.Assertions.assertDoesNotThrow(() -> validator.validateInputStructure(input));
     }
 

@@ -1,7 +1,6 @@
 package calculator;
 
 import camp.nextstep.edu.missionutils.test.NsTest;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -10,19 +9,12 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 /**
- * ApplicationTest - 통합 테스트 (콘솔 입출력 테스트)
- *
- * NsTest를 상속받아 콘솔 입출력을 모의하는 통합 테스트입니다.
- *
  * 커스텀 구분자 처리:
- * - InputView가 "//"로 시작하는 입력을 감지하면 자동으로 두 번째 줄을 읽습니다.
- * - NsTest에서는 run("//;\\n1;2;3") 형식으로 개행을 포함한 입력을 시뮬레이션합니다.
- * - 실제 실행 시에는 사용자가 구분자 선언과 숫자를 각각 입력합니다.
+ * - InputView가 "//"로 시작하는 입력을 감지하면 자동으로 두 번째 줄을 읽음
+ * - NsTest에서는 run("//;\\n1;2;3") 형식으로 개행을 포함한 입력을 시뮬레이션함
+ * - 실제 실행 시에는 사용자가 구분자 선언과 숫자를 각각 입력함
  */
 class ApplicationTest extends NsTest {
-
-    // camp.nextstep.edu.missionutils.test.Assertions.assertSimpleTest 사용
-    // static import되어 있어 바로 사용 가능
 
     // 기본 기능 테스트 (한 줄 입력으로 가능한 경우)
 
